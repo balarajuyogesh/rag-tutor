@@ -1,4 +1,5 @@
 from collections.abc import AsyncGenerator
+from typing import Annotated
 
 from fastapi import Depends
 from surrealdb import AsyncSurreal
@@ -29,3 +30,5 @@ async def get_db() -> AsyncGenerator[AsyncSurreal]:
 
 
 DbSession = Depends(get_db)
+Database = Annotated[AsyncSurreal, Depends(get_db)]
+
