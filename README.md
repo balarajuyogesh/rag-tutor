@@ -24,6 +24,30 @@ curl -X POST http://127.0.0.1:8005/rag/ask \
 Re-ingest `kb/doc/Vector_Calculus_ Formulations_Applications_Python_Codes.pdf`
 at any time with `POST /rag/ingest`. Stable chunk IDs make ingestion idempotent.
 
+### Upload and query PDF books
+
+Apply migrations, then upload any text-based PDF as multipart form data:
+
+```bash
+make migrate
+curl -X POST http://127.0.0.1:8005/rag/ingest \
+  -F 'file=@/path/to/book.pdf'
+```
+
+The response contains a stable `document_id` derived from the file content.
+List the available sources with `GET /rag/documents`, then optionally restrict a
+question to one or more books:
+
+```bash
+curl -X POST http://127.0.0.1:8005/rag/ask \
+  -H 'content-type: application/json' \
+  -d '{"question":"Summarize chapter one","document_ids":["DOCUMENT_ID"]}'
+```
+
+Omit `document_ids` to search across the full PDF library. Existing documents
+ingested before migration `003` should be ingested again to attach their
+document metadata. Image-only PDFs require OCR before upload.
+
 ## Web chat
 
 The React client lives in `apps/web` and is managed from the root Yarn

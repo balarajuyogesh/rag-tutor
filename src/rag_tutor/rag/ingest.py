@@ -16,8 +16,13 @@ async def main() -> None:
         raise FileNotFoundError(f"No Vector Calculus PDF found in {settings.KB_PATH}")
     db = await init_db()
     try:
-        count = await ingest_pdf(path, db, AsyncOpenAI(api_key=settings.OPENAI_API_KEY))
-        print(f"Stored {count} chunks from {path}")
+        document = await ingest_pdf(
+            path,
+            db,
+            AsyncOpenAI(api_key=settings.OPENAI_API_KEY),
+            source_name=path.name,
+        )
+        print(f"Stored {document.chunks_stored} chunks from {path}")
     finally:
         await db.close()
 

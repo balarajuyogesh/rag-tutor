@@ -14,9 +14,34 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "question": "What is the divergence theorem?"
+  "question": "What is the divergence theorem?",
+  "document_ids": ["replace-with-a-document-id"]
 }
 
-### Ingest the configured Vector Calculus PDF
+### List ingested PDF documents
+GET {{baseUrl}}/rag/documents
+Accept: application/json
+
+### Upload and ingest the Vector Calculus PDF
 POST {{baseUrl}}/rag/ingest
 Accept: application/json
+Content-Type: multipart/form-data; boundary=VectorCalculusBoundary
+
+--VectorCalculusBoundary
+Content-Disposition: form-data; name="file"; filename="Vector_Calculus_ Formulations_Applications_Python_Codes.pdf"
+Content-Type: application/pdf
+
+< ../kb/doc/Vector_Calculus_ Formulations_Applications_Python_Codes.pdf
+--VectorCalculusBoundary--
+
+### Upload and ingest the Introducing Algorithms in C PDF
+POST {{baseUrl}}/rag/ingest
+Accept: application/json
+Content-Type: multipart/form-data; boundary=AlgorithmsBoundary
+
+--AlgorithmsBoundary
+Content-Disposition: form-data; name="file"; filename="Luciano_Manelli_Introducing_Algorithms_in_C_ A_Step_by_Step_Guide_to_Algorithms_in_C.pdf"
+Content-Type: application/pdf
+
+< ../kb/doc/Luciano_Manelli_Introducing_Algorithms_in_C_ A_Step_by_Step_Guide_to_Algorithms_in_C.pdf
+--AlgorithmsBoundary--

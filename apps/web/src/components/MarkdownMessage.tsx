@@ -21,16 +21,22 @@ function withCitationBadges(children: ReactNode): ReactNode {
   return Children.map(children, (child) => {
     if (typeof child !== "string") return child;
 
-    const parts = child.split(/(\[source,\s*p\.\s*\d+\])/gi);
+    const parts = child.split(
+      /(\[(?:Source:\s*[^,\]]+|source),\s*p\.\s*\d+\])/gi,
+    );
     return parts.map((part, index) => {
-      const match = part.match(/^\[source,\s*p\.\s*(\d+)\]$/i);
+      const match = part.match(
+        /^\[(?:Source:\s*([^,\]]+)|source),\s*p\.\s*(\d+)\]$/i,
+      );
       if (!match) return part;
+
+      const title = match[1]?.trim() || "Source";
 
       return (
         <Chip
-          key={`${match[1]}-${index}`}
+          key={`${title}-${match[2]}-${index}`}
           icon={<ArticleOutlinedIcon />}
-          label={`Source · p. ${match[1]}`}
+          label={`${title} · p. ${match[2]}`}
           size="small"
           variant="outlined"
           className="citation-badge"

@@ -24,7 +24,8 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { askTutor } from "./api";
+import { askTutor, getDocuments, type LibraryDocument } from "./api";
+import { DocumentPicker } from "./components/DocumentPicker";
 import { MarkdownMessage } from "./components/MarkdownMessage";
 
 type Role = "user" | "assistant";
@@ -33,6 +34,7 @@ interface Message {
   id: string;
   role: Role;
   content: string;
+  attachments?: Array<{ id: string; title: string }>;
 }
 
 const suggestions = [
@@ -58,12 +60,28 @@ function App() {
   const [question, setQuestion] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [documents, setDocuments] = useState<LibraryDocument[]>([]);
+  const [selectedDocuments, setSelectedDocuments] = useState<LibraryDocument[]>([]);
+  const [documentsLoading, setDocumentsLoading] = useState(true);
+  const [documentsError, setDocumentsError] = useState<string | null>(null);
   const controllerRef = useRef<AbortController | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    getDocuments(controller.signal)
+      .then(setDocuments)
+      .catch((caught: unknown) => {
+        if (caught instanceof DOMException && caught.name === "AbortError") return;
+        setDocumentsError("Book attachments are temporarily unavailable.");
+      })
+      .finally(() => setDocumentsLoading(false));
+    return () => controller.abort();
+  }, []);
 
   const submitQuestion = async (value = question) => {
     const trimmed = value.trim();
@@ -73,6 +91,10 @@ function App() {
       id: crypto.randomUUID(),
       role: "user",
       content: trimmed,
+      attachments: selectedDocuments.map((document) => ({
+        id: document.document_id,
+        title: document.title,
+      })),
     };
     setMessages((current) => [...current, userMessage]);
     setQuestion("");
@@ -81,7 +103,11 @@ function App() {
     controllerRef.current = new AbortController();
 
     try {
-      const response = await askTutor(trimmed, controllerRef.current.signal);
+      const response = await askTutor(
+        trimmed,
+        selectedDocuments.map((document) => document.document_id),
+        controllerRef.current.signal,
+      );
       setMessages((current) => [
         ...current,
         { id: crypto.randomUUID(), role: "assistant", content: response.answer },
@@ -112,6 +138,7 @@ function App() {
     setMessages([starterMessage]);
     setError(null);
     setIsLoading(false);
+    setSelectedDocuments([]);
     setDrawerOpen(false);
   };
 
@@ -189,7 +216,7 @@ function App() {
               <Box className="status-dot" />
               <Typography variant="body2" fontWeight={650}>The library is open</Typography>
             </Stack>
-            <Chip icon={<AutoStoriesOutlinedIcon />} label="Books indexed" size="small" variant="outlined" sx={{ ml: "auto", bgcolor: "background.paper" }} />
+            <Chip icon={<AutoStoriesOutlinedIcon />} label={`${documents.length} ${documents.length === 1 ? "book" : "books"} indexed`} size="small" variant="outlined" sx={{ ml: "auto", bgcolor: "background.paper" }} />
           </Toolbar>
         </AppBar>
 
@@ -215,7 +242,16 @@ function App() {
                     {message.role === "assistant" ? (
                       <MarkdownMessage>{message.content}</MarkdownMessage>
                     ) : (
-                      <Typography sx={{ whiteSpace: "pre-wrap" }}>{message.content}</Typography>
+                      <Box>
+                        {!!message.attachments?.length && (
+                          <Stack direction="row" spacing={0.75} useFlexGap flexWrap="wrap" sx={{ mb: 1 }}>
+                            {message.attachments.map((attachment) => (
+                              <Chip key={attachment.id} icon={<AutoStoriesOutlinedIcon />} label={attachment.title} size="small" className="message-attachment" />
+                            ))}
+                          </Stack>
+                        )}
+                        <Typography sx={{ whiteSpace: "pre-wrap" }}>{message.content}</Typography>
+                      </Box>
                     )}
                   </Box>
                 </Stack>
@@ -244,6 +280,30 @@ function App() {
                   <Chip key={suggestion} label={suggestion} variant="outlined" onClick={() => void submitQuestion(suggestion)} sx={{ flexShrink: 0, bgcolor: "background.paper" }} />
                 ))}
               </Stack>
+            )}
+            {(documentsLoading || documents.length > 0) && (
+              <Box className="attachment-picker">
+                <Stack direction="row" alignItems="baseline" justifyContent="space-between" sx={{ mb: 0.75, px: 0.25 }}>
+                  <Typography variant="caption" fontWeight={750} color="text.secondary">
+                    Optional book attachments
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {selectedDocuments.length ? `${selectedDocuments.length} selected` : "All books searched by default"}
+                  </Typography>
+                </Stack>
+                <DocumentPicker
+                  documents={documents}
+                  selected={selectedDocuments}
+                  onChange={setSelectedDocuments}
+                  loading={documentsLoading}
+                  disabled={isLoading}
+                />
+              </Box>
+            )}
+            {documentsError && (
+              <Typography variant="caption" color="warning.main" sx={{ display: "block", mb: 1 }}>
+                {documentsError} Questions will search the full library.
+              </Typography>
             )}
             <Box component="form" onSubmit={handleSubmit} className="composer">
               <TextField

@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     EMBEDDING_DIMENSIONS: int = 1536
     RAG_TOP_K: int = 5
     KB_PATH: str = "kb/doc"
+    MAX_PDF_SIZE_MB: int = 250
 
     model_config = SettingsConfigDict(
         env_file=(".env", ".env.local"),
