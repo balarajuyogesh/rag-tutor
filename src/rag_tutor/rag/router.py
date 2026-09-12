@@ -37,7 +37,7 @@ async def ask(request: AskRequest, db: Database) -> AskResponse:
 async def ingest(db: Database) -> IngestResponse:
     if not settings.OPENAI_API_KEY:
         raise HTTPException(status_code=503, detail="OPENAI_API_KEY is not configured")
-    path = next(Path(settings.KB_PATH).glob("*Vector*Calculus*.pdf"), None)
+    path = next(Path(settings.KB_PATH).glob("*Manelli*Algorithms*.pdf"), None)
     if path is None:
         raise HTTPException(status_code=404, detail="Vector Calculus PDF not found")
     count = await ingest_pdf(path, db, AsyncOpenAI(api_key=settings.OPENAI_API_KEY))

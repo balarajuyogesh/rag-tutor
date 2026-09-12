@@ -27,7 +27,11 @@ async def answer_question(question: str, db: AsyncSurreal) -> str:
             "before answering. Base factual and mathematical explanations on retrieved "
             "passages. Cite supporting passages inline as [source, p. N]. If the "
             "passages "
-            "do not contain enough information, say so clearly."
+            "do not contain enough information, say so clearly. Format the response "
+            "as Markdown. Wrap inline LaTeX only in single dollar signs, for example "
+            "$D_u f$, and put display LaTeX between double dollar signs on their own "
+            "lines. Never use \\( ... \\) or \\[ ... \\] math delimiters. Prefer short "
+            "paragraphs and place important equations on separate lines."
         ),
         tools=[search_vector_calculus],
     )
