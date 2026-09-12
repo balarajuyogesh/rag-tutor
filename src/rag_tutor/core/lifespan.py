@@ -2,7 +2,6 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-import rag_tutor.models  # noqa: F401
 from rag_tutor.core.vectordb.database import init_db
 
 

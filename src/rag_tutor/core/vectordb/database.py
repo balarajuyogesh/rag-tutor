@@ -1,29 +1,31 @@
 from collections.abc import AsyncGenerator
 
 from fastapi import Depends
-from surrealdb import Surreal
+from surrealdb import AsyncSurreal
 
 from rag_tutor.core.vectordb.config import settings
 
 
-async def init_db() -> Surreal:
+async def init_db() -> AsyncSurreal:
     """Initialize and authenticate a SurrealDB connection for the app."""
-    client = Surreal(settings.DATABASE_URL)
-    client.signin({
-        "user": settings.SURREALDB_USER,
-        "pass": settings.SURREALDB_PASS,
-    })
-    client.use(settings.SURREALDB_NS, settings.SURREALDB_DB)
+    client = AsyncSurreal(settings.DATABASE_URL)
+    await client.signin(
+        {
+            "user": settings.SURREALDB_USER,
+            "pass": settings.SURREALDB_PASS,
+        }
+    )
+    await client.use(settings.SURREALDB_NS, settings.SURREALDB_DB)
     return client
 
 
-async def get_db() -> AsyncGenerator[Surreal]:
+async def get_db() -> AsyncGenerator[AsyncSurreal]:
     """FastAPI dependency that provides one SurrealDB client per request."""
     db = await init_db()
     try:
         yield db
     finally:
-        db.close()
+        await db.close()
 
 
 DbSession = Depends(get_db)
