@@ -1,3 +1,4 @@
+import argparse
 import logging
 
 import uvicorn
@@ -42,9 +43,18 @@ def health():
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Run the Rag Tutor API.")
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Run the app in debug mode with reload enabled and debug logging.",
+    )
+    args = parser.parse_args()
+
     uvicorn.run(
         "rag_tutor.main:app",
         host="127.0.0.1",
         port=settings.TUTOR_SERVER_PORT,
-        reload=True,
+        reload=args.debug,
+        log_level="debug" if args.debug else "info",
     )
