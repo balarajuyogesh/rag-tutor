@@ -3,16 +3,16 @@ import { alpha, createTheme } from "@mui/material/styles";
 export const theme = createTheme({
   palette: {
     mode: "light",
-    primary: { main: "#165d52", dark: "#0d463d", light: "#d9eee9" },
-    secondary: { main: "#d16f3f" },
-    background: { default: "#f5f6f1", paper: "#ffffff" },
-    text: { primary: "#17211f", secondary: "#66716e" },
-    divider: "#dfe4df",
+    primary: { main: "#3f3151", dark: "#2b2138", light: "#e9e2ef" },
+    secondary: { main: "#a95f36", dark: "#794326", light: "#f2ded0" },
+    background: { default: "#f6f1e7", paper: "#fffdf8" },
+    text: { primary: "#2b2927", secondary: "#706a63" },
+    divider: "#ded5c7",
   },
   typography: {
     fontFamily: 'Inter, "Segoe UI", sans-serif',
     h1: {
-      fontFamily: '"DM Serif Display", Georgia, serif',
+      fontFamily: '"DM Serif Display", "Iowan Old Style", Georgia, serif',
       fontSize: "clamp(2.1rem, 5vw, 3.5rem)",
       fontWeight: 400,
       letterSpacing: "-0.035em",
@@ -40,7 +40,7 @@ export const theme = createTheme({
     },
     MuiTooltip: {
       styleOverrides: {
-        tooltip: { backgroundColor: alpha("#17211f", 0.92) },
+        tooltip: { backgroundColor: alpha("#2b2927", 0.92) },
       },
     },
   },
