@@ -1,4 +1,4 @@
-.PHONY: help sync format lint fix build test dev debug run check clean start migrate-bootstrap migrate-apply migrate-status
+.PHONY: help sync format lint fix build test dev debug run check clean start migrate migrate-bootstrap migrate-apply migrate-status
 
 POE = uv run poe
 
@@ -9,6 +9,8 @@ help:
 	@echo "  make format            - format code"
 	@echo "  make dev               - start FastAPI app"
 	@echo "  make debug             - start FastAPI app in debug mode"
+	@echo "  make migrate           - bootstrap + apply SurrealDB migrations"
+	@echo "  make start             - run checks, migrations, then start app"
 	@echo "  make migrate-bootstrap - create namespace/database"
 	@echo "  make migrate-apply     - apply all SurrealDB migrations"
 	@echo "  make migrate-status   - list migration files"
@@ -45,12 +47,16 @@ dev:
 debug:
 	@$(POE) debug
 
+migrate:
+	@$(POE) migrate
+
 run: dev
 
 check:
 	@$(POE) lint
 
-start: dev
+start:
+	@$(POE) start
 
 migrate-bootstrap:
 	@echo "${MESSAGE:-Bootstrapping SurrealDB namespace and database...}"
