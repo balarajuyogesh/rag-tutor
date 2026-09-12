@@ -1,20 +1,16 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
 from openai import AsyncOpenAI
 from pydantic import BaseModel, Field
-from surrealdb import AsyncSurreal
 
-from rag_tutor.core.vectordb.config import settings
-from rag_tutor.core.vectordb.database import get_db
+from rag_tutor.core.vectordb import settings, Database
 from rag_tutor.rag.agent import answer_question
 from rag_tutor.rag.store import ingest_pdf
 
 router = APIRouter(prefix="/rag", tags=["RAG"])
-Database = Annotated[AsyncSurreal, Depends(get_db)]
 
 
 class AskRequest(BaseModel):
