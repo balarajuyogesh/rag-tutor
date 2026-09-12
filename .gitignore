@@ -60,3 +60,9 @@ temp/
 *.db
 data/
 volumes/
+
+# JavaScript dependencies and Vite output
+node_modules/
+.yarn/cache/
+.yarn/install-state.gz
+apps/*/dist/
