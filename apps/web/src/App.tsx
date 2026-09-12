@@ -1,8 +1,8 @@
 import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
-import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
-import CalculateOutlinedIcon from "@mui/icons-material/CalculateOutlined";
+import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
+import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
+import LocalLibraryOutlinedIcon from "@mui/icons-material/LocalLibraryOutlined";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
-import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import StopRoundedIcon from "@mui/icons-material/StopRounded";
 import {
@@ -36,16 +36,16 @@ interface Message {
 }
 
 const suggestions = [
-  "Explain the divergence theorem intuitively",
-  "How do I compute a directional derivative?",
-  "Compare curl and divergence with examples",
+  "Summarize the central idea of this book",
+  "Explain a difficult concept in simple terms",
+  "Create five study questions from the material",
 ];
 
 const starterMessage: Message = {
   id: "welcome",
   role: "assistant",
   content:
-    "Hi — I’m **Vector**, your calculus study partner. Ask me a question and I’ll ground the explanation in your course material, with equations when they help.\n\nFor example, the gradient of a scalar field $f$ is\n\n$$\\nabla f = \\left(\\frac{\\partial f}{\\partial x}, \\frac{\\partial f}{\\partial y}, \\frac{\\partial f}{\\partial z}\\right).$$",
+    "Welcome to the reading room. I’m **Folio**, your guide through the books in this library. Ask about an idea, request a summary, or work through a difficult passage with me.\n\nI’ll answer from the indexed pages and leave page references along the way, so you can always return to the source.",
 };
 
 const drawerWidth = 280;
@@ -118,38 +118,38 @@ function App() {
   const sidebar = (
     <Stack sx={{ height: "100%", p: 2.5 }}>
       <Stack direction="row" alignItems="center" spacing={1.25} sx={{ px: 0.5, mb: 3 }}>
-        <Avatar sx={{ bgcolor: "primary.main", width: 38, height: 38 }}>
-          <CalculateOutlinedIcon fontSize="small" />
+        <Avatar className="brand-mark">
+          <AutoStoriesOutlinedIcon fontSize="small" />
         </Avatar>
         <Box>
-          <Typography fontWeight={750} letterSpacing="-0.02em">Vector</Typography>
-          <Typography variant="caption" color="text.secondary">RAG calculus tutor</Typography>
+          <Typography fontWeight={750} letterSpacing="-0.02em">Folio</Typography>
+          <Typography variant="caption" color="text.secondary">Your reading companion</Typography>
         </Box>
       </Stack>
 
-      <Button variant="contained" size="large" onClick={resetChat} startIcon={<AutoAwesomeRoundedIcon />}>
-        New conversation
+      <Button variant="contained" size="large" onClick={resetChat} startIcon={<BookmarkBorderRoundedIcon />}>
+        Start a new thread
       </Button>
 
       <Box sx={{ mt: 4 }}>
         <Typography variant="overline" color="text.secondary" fontWeight={700}>
-          Study space
+          The reading room
         </Typography>
         <Stack spacing={1} sx={{ mt: 1 }}>
           <Box className="nav-card nav-card-active">
-            <SchoolOutlinedIcon fontSize="small" />
+            <LocalLibraryOutlinedIcon fontSize="small" />
             <Box>
-              <Typography variant="body2" fontWeight={700}>Vector calculus</Typography>
-              <Typography variant="caption" color="text.secondary">Course knowledge base</Typography>
+              <Typography variant="body2" fontWeight={700}>Your PDF library</Typography>
+              <Typography variant="caption" color="text.secondary">Indexed and ready to explore</Typography>
             </Box>
           </Box>
         </Stack>
       </Box>
 
-      <Box sx={{ mt: "auto", p: 2, bgcolor: "rgba(22, 93, 82, .07)", borderRadius: 3 }}>
-        <Typography variant="body2" fontWeight={700}>Grounded answers</Typography>
+      <Box className="library-note" sx={{ mt: "auto", p: 2, borderRadius: 3 }}>
+        <Typography variant="overline" color="secondary.main" fontWeight={800}>A note from Folio</Typography>
         <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5, lineHeight: 1.5 }}>
-          Responses use the indexed Vector Calculus course material.
+          Every answer begins in your books. Look for page markers to trace an idea back to its source.
         </Typography>
       </Box>
     </Stack>
@@ -170,7 +170,7 @@ function App() {
             boxSizing: "border-box",
             borderRight: "1px solid",
             borderColor: "divider",
-            bgcolor: "#fafbf8",
+            bgcolor: "#fbf7ef",
           },
         }}
       >
@@ -178,7 +178,7 @@ function App() {
       </Drawer>
 
       <Box component="main" sx={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", height: "100dvh" }}>
-        <AppBar position="static" color="transparent" elevation={0} sx={{ borderBottom: "1px solid", borderColor: "divider", bgcolor: "rgba(245,246,241,.82)", backdropFilter: "blur(14px)" }}>
+        <AppBar position="static" color="transparent" elevation={0} sx={{ borderBottom: "1px solid", borderColor: "divider", bgcolor: "rgba(246,241,231,.84)", backdropFilter: "blur(14px)" }}>
           <Toolbar sx={{ minHeight: "68px !important" }}>
             {!isDesktop && (
               <IconButton edge="start" onClick={() => setDrawerOpen(true)} aria-label="Open navigation" sx={{ mr: 1 }}>
@@ -187,9 +187,9 @@ function App() {
             )}
             <Stack direction="row" alignItems="center" spacing={1}>
               <Box className="status-dot" />
-              <Typography variant="body2" fontWeight={650}>Tutor online</Typography>
+              <Typography variant="body2" fontWeight={650}>The library is open</Typography>
             </Stack>
-            <Chip label="Vector calculus" size="small" variant="outlined" sx={{ ml: "auto", bgcolor: "background.paper" }} />
+            <Chip icon={<AutoStoriesOutlinedIcon />} label="Books indexed" size="small" variant="outlined" sx={{ ml: "auto", bgcolor: "background.paper" }} />
           </Toolbar>
         </AppBar>
 
@@ -197,10 +197,10 @@ function App() {
           <Container maxWidth="md" sx={{ py: { xs: 4, md: 6 } }}>
             {messages.length === 1 && (
               <Box sx={{ mb: 5 }}>
-                <Typography variant="overline" color="primary.main" fontWeight={800}>Learn with clarity</Typography>
-                <Typography variant="h1" sx={{ maxWidth: 650, mt: 0.5 }}>Make the math click.</Typography>
+                <Typography variant="overline" color="secondary.main" fontWeight={800}>A conversation with your library</Typography>
+                <Typography variant="h1" sx={{ maxWidth: 650, mt: 0.5 }}>Read between the lines.</Typography>
                 <Typography color="text.secondary" sx={{ mt: 2, maxWidth: 570, fontSize: "1.05rem", lineHeight: 1.7 }}>
-                  Explore vector calculus through grounded explanations, worked equations, and focused follow-up questions.
+                  Turn dense pages into clear ideas. Folio reads alongside you, connects passages, and keeps every answer grounded in your books.
                 </Typography>
               </Box>
             )}
@@ -209,7 +209,7 @@ function App() {
               {messages.map((message) => (
                 <Stack key={message.id} direction="row" spacing={1.5} className={`message-row ${message.role}`}>
                   {message.role === "assistant" && (
-                    <Avatar className="tutor-avatar"><AutoAwesomeRoundedIcon fontSize="small" /></Avatar>
+                    <Avatar className="tutor-avatar"><AutoStoriesOutlinedIcon fontSize="small" /></Avatar>
                   )}
                   <Box className="message-bubble">
                     {message.role === "assistant" ? (
@@ -223,10 +223,10 @@ function App() {
 
               {isLoading && (
                 <Stack direction="row" spacing={1.5} alignItems="center">
-                  <Avatar className="tutor-avatar"><AutoAwesomeRoundedIcon fontSize="small" /></Avatar>
+                  <Avatar className="tutor-avatar"><AutoStoriesOutlinedIcon fontSize="small" /></Avatar>
                   <Stack direction="row" alignItems="center" spacing={1.2} className="thinking-bubble">
                     <CircularProgress size={17} thickness={5} />
-                    <Typography variant="body2" color="text.secondary">Working through it…</Typography>
+                    <Typography variant="body2" color="text.secondary">Turning through the pages…</Typography>
                   </Stack>
                 </Stack>
               )}
@@ -236,7 +236,7 @@ function App() {
           </Container>
         </Box>
 
-        <Box sx={{ borderTop: "1px solid", borderColor: "divider", bgcolor: "rgba(250,251,248,.94)", px: 2, py: 2 }}>
+        <Box sx={{ borderTop: "1px solid", borderColor: "divider", bgcolor: "rgba(251,247,239,.95)", px: 2, py: 2 }}>
           <Container maxWidth="md">
             {messages.length === 1 && (
               <Stack direction="row" spacing={1} sx={{ mb: 1.5, overflowX: "auto", pb: 0.5 }}>
@@ -253,7 +253,7 @@ function App() {
                 value={question}
                 onChange={(event) => setQuestion(event.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask about gradients, line integrals, divergence…"
+                placeholder="Ask anything about your books…"
                 slotProps={{ htmlInput: { maxLength: 4000, "aria-label": "Ask the tutor" } }}
                 sx={{ "& fieldset": { border: 0 }, "& .MuiInputBase-root": { py: 1.1 } }}
               />
@@ -273,7 +273,7 @@ function App() {
               </Tooltip>
             </Box>
             <Typography variant="caption" color="text.secondary" sx={{ display: "block", textAlign: "center", mt: 1 }}>
-              Enter to send · Shift + Enter for a new line · Verify important results
+              Enter to send · Shift + Enter for a new line · Answers include page references
             </Typography>
           </Container>
         </Box>
