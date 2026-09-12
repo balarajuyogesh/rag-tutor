@@ -1,6 +1,7 @@
-.PHONY: help sync format lint fix build test dev debug run check clean start migrate migrate-bootstrap migrate-apply migrate-status
+.PHONY: help sync format lint fix build test dev debug run check clean start ingest migrate migrate-bootstrap migrate-apply migrate-status
 
-POE = uv run poe
+UV_CACHE_DIR ?= $(CURDIR)/.uv-cache
+POE = UV_CACHE_DIR="$(UV_CACHE_DIR)" uv run poe
 
 help:
 	@echo "Available commands:"
@@ -10,6 +11,7 @@ help:
 	@echo "  make dev               - start FastAPI app"
 	@echo "  make debug             - start FastAPI app in debug mode"
 	@echo "  make migrate           - bootstrap + apply SurrealDB migrations"
+	@echo "  make ingest            - embed and store the Vector Calculus PDF"
 	@echo "  make start             - run checks, migrations, then start app"
 	@echo "  make migrate-bootstrap - create namespace/database"
 	@echo "  make migrate-apply     - apply all SurrealDB migrations"
@@ -49,6 +51,9 @@ debug:
 
 migrate:
 	@$(POE) migrate
+
+ingest:
+	@$(POE) ingest
 
 run: dev
 

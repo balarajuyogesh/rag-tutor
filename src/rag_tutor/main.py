@@ -6,18 +6,20 @@ from fastapi import FastAPI
 
 from rag_tutor.core import lifespan
 from rag_tutor.core.vectordb.config import settings
+from rag_tutor.rag.router import router as rag_router
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI(
-    title="Notes API",
-    description="A simple Notes REST API built with FastAPI and SQLAlchemy",
+    title="RAG Tutor API",
+    description="An OpenAI agent grounded in documents stored in SurrealDB",
     version="1.0.0",
     lifespan=lifespan,
 )
 app.state.port = settings.TUTOR_SERVER_PORT
 logger.info("Rag Tutor API configured for port %s", settings.TUTOR_SERVER_PORT)
+app.include_router(rag_router)
 
 
 @app.get("/", tags=["Root"])
@@ -26,7 +28,7 @@ def root():
     Health check endpoint.
     """
     return {
-        "message": "Welcome to Notes API 🚀",
+        "message": "Welcome to RAG Tutor API 🚀",
         "docs": "/docs",
         "redoc": "/redoc",
     }
