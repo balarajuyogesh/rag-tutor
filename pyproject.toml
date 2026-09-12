@@ -1,19 +1,16 @@
 [project]
 name = "rag-tutor"
 version = "0.1.0"
-description = "Add your description here"
+description = "RAG Tutor API"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "fastapi[all]>=0.141.1",
-    "psycopg[binary]>=3.3.5",
     "pydantic-settings>=2.15.0",
-    "sqlalchemy>=2.0.52",
+    "python-dotenv>=1.1.1",
+    "surrealdb>=2.0.0",
     "uvicorn[standard]>=0.52.4",
 ]
-
-[project.scripts]
-rag-tutor = "rag_tutor:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -25,4 +22,57 @@ dev = [
     "pytest>=9.1.1",
     "pytest-cov>=7.1.0",
     "ruff>=0.16.7",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/rag_tutor"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/rag_tutor",
+    "src/tutor_migrations",
+    "README.md",
+    "pyproject.toml",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.uv.workspace]
+members = ["src/tutor_migrations"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.poe.tasks]
+clean = "find . -type d \\( -name '.pytest_cache' -o -name '.ruff_cache' -o -name '.mypy_cache' -o -name 'dist' -o -name 'build' -o -name '__pycache__' \\) -exec rm -rf {} + -o -type f -name '*.pyc' -delete"
+sync = "uv sync"
+format = "ruff format ."
+lint = "ruff check ."
+fix = "ruff check --fix ."
+build = "uv build"
+test = "pytest"
+dev = "uv run python -m rag_tutor.main"
+migrate-bootstrap = "uv run --project src/tutor_migrations tutor-migrations bootstrap"
+migrate-apply = "uv run --project src/tutor_migrations tutor-migrations apply"
+migrate-status = "uv run --project src/tutor_migrations tutor-migrations status"
+check.sequence = [
+    "clean",
+    "sync",
+    "format",
+    "fix",
+    "lint",
+]
+start.sequence = [
+    "check",
+    "dev",
 ]

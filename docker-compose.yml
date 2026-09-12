@@ -1,0 +1,26 @@
+services:
+  surrealdb:
+    image: surrealdb/surrealdb:latest
+    container_name: rag-tutor-surrealdb
+    command: start --log info --user root --pass root memory
+    ports:
+      - "8001:8000"
+    environment:
+      SURREAL_USER: root
+      SURREAL_PASS: root
+    restart: unless-stopped
+
+  # surrealdb-studio:
+  #   image: surrealdb/studio:latest
+  #   container_name: rag-tutor-surrealdb-studio
+  #   environment:
+  #     SURREALDB_URL: ws://surrealdb:8000/rpc
+  #     SURREALDB_NAMESPACE: rag_tutor
+  #     SURREALDB_DATABASE: rag_tutor
+  #     SURREALDB_USERNAME: root
+  #     SURREALDB_PASSWORD: root
+  #   ports:
+  #     - "8002:3000"
+  #   depends_on:
+  #     - surrealdb
+  #   restart: unless-stopped

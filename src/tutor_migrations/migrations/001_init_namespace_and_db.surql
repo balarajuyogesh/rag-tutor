@@ -1,0 +1,4 @@
+DEFINE NAMESPACE IF NOT EXISTS rag_tutor;
+USE NS rag_tutor;
+DEFINE DATABASE IF NOT EXISTS rag_tutor;
+USE DB rag_tutor;
