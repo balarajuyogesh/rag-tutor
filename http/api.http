@@ -1,0 +1,22 @@
+@baseUrl = http://127.0.0.1:8005
+
+### API information
+GET {{baseUrl}}/
+Accept: application/json
+
+### Health check
+GET {{baseUrl}}/health
+Accept: application/json
+
+### Ask the RAG tutor a question
+POST {{baseUrl}}/rag/ask
+Content-Type: application/json
+Accept: application/json
+
+{
+  "question": "What is the divergence theorem?"
+}
+
+### Ingest the configured Vector Calculus PDF
+POST {{baseUrl}}/rag/ingest
+Accept: application/json

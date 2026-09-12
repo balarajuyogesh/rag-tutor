@@ -68,10 +68,13 @@ test = "pytest"
 dev = "uv run python -m rag_tutor.main"
 debug = "uv run python -m rag_tutor.main --debug"
 ingest = "uv run python -m rag_tutor.rag.ingest"
-migrate = "uv run --project src/tutor_migrations tutor-migrations bootstrap && uv run --project src/tutor_migrations tutor-migrations apply"
 migrate-bootstrap = "uv run --project src/tutor_migrations tutor-migrations bootstrap"
 migrate-apply = "uv run --project src/tutor_migrations tutor-migrations apply"
 migrate-status = "uv run --project src/tutor_migrations tutor-migrations status"
+migrate.sequence = [
+    "migrate-bootstrap",
+    "migrate-apply",
+]
 check.sequence = [
     "clean",
     "sync",
